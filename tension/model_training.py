@@ -12,9 +12,6 @@ df = df[['age', 'sex', 'trestbps', 'restecg', 'cp', 'thalach', 'exang', 'target'
 
 # Analizar la correlación entre características y la etiqueta target
 correlation_matrix = df.corr()
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
-plt.title('Correlation Matrix')
-plt.show()
 
 # Seleccionar características más correlacionadas con target
 correlation_threshold = 0.2  # Umbral de correlación
@@ -33,15 +30,11 @@ X_test = scaler.transform(X_test)
 
 # Definir el modelo
 model = Sequential()
-model.add(Dense(16, input_dim=len(correlated_features), activation='relu'))
+model.add(Dense(64, input_dim=len(correlated_features), activation='relu'))
+model.add(Dense(32, activation='relu'))
 model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(4, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 # Compilar el modelo
@@ -49,7 +42,7 @@ from tensorflow.keras.optimizers import Adam
 model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
 
 # Entrenar el modelo
-history = model.fit(X_train, y_train, epochs=75, batch_size=32, validation_data=(X_test, y_test))
+history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test))
 
 # Evaluar el modelo
 loss, accuracy = model.evaluate(X_test, y_test)
