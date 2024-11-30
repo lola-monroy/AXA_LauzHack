@@ -17,7 +17,7 @@ X_test = scaler.transform(X_test)
 model = Sequential()
 model.add(Dense(64, input_dim=7, activation='relu'))
 model.add(Dense(32, activation='relu'))
-model.add(Dense(1), activation='sigmoid')
+model.add(Dense(1, activation='sigmoid'))
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test))
@@ -28,4 +28,3 @@ probabilities = model.predict(X_test)
 predictions = (probabilities > 0.5).astype(int)
 for i in range(10):
     print(f"Predicted: {predictions[i][0]}, Actual: {y_test[i]}")
-
