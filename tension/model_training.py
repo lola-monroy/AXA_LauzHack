@@ -15,6 +15,7 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 model = Sequential()
+model = Sequential()
 model.add(Dense(64, input_dim=7, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
@@ -28,3 +29,4 @@ probabilities = model.predict(X_test)
 predictions = (probabilities > 0.5).astype(int)
 for i in range(10):
     print(f"Predicted: {predictions[i][0]}, Actual: {y_test[i]}")
+
