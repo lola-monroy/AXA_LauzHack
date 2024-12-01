@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 15,
     backgroundColor: '#FFFFFF',
-    //borderRadius: 10,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -46,6 +46,30 @@ const styles = StyleSheet.create({
     flexDirection: 'column', // Display buttons vertically
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonMenu: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF', // White background color
+    borderColor: '#00008F', // Blue border color
+    borderWidth: 2,
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    borderRadius: 15,
+    marginVertical: 15, // Add space between buttons
+    width: 250, // Fixed width for buttons
+    height: 150, // Fixed height for buttons
+    shadowColor: '#000', // Shadow color
+    shadowOffset: { width: 0, height: 5 }, // Shadow offset
+    shadowOpacity: 0.3, // Shadow opacity
+    shadowRadius: 5, // Shadow radius
+    elevation: 5, // Elevation for Android
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
   },
   buttonPrimary: {
     flexDirection: 'column',

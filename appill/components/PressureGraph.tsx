@@ -1,24 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, useWindowDimensions } from 'react-native';
+import { View, Text, useWindowDimensions, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import styles from '../assets/styles'; // Import the styles
 
 const PressureGraph = () => {
   const { width, height } = useWindowDimensions();
   const chartHeight = height * 0.4; // 40% of the window height
+  const navigation = useNavigation();
 
-  const [data, setData] = useState({
-    systolic: [],
-  });
+    const [data, setData] = useState<{ systolic: number[] }>({
+        systolic: [],
+    });
 
   const fetchData = () => {
     fetch('http://127.0.0.1:5000/smartwatch')
-        .then((response) => response.json())
-        .then((json) => {
-            console.log(json);
-            setData(json);
-        })
-        .catch((error) => console.error(error));
+      .then((response) => response.json())
+      .then((json) => {
+        setData((prevData) => {
+            const newSystolic = [...prevData.systolic];
+            // Ensure the array has at least 5 elements
+            while (newSystolic.length < 5) {
+              newSystolic.push(0);
+            }
+            // Assign the blood_pressure value to the 5th position
+            newSystolic.push(json.blood_pressure);
+            if (newSystolic.length > 5) {
+              // Remove the first element if the array has more than 5 elements
+              newSystolic.shift();
+            }
+  
+            return {
+              systolic: newSystolic,
+            };
+          });
+        console.log(data);
+      })
+      .catch((error) => console.error('Error fetching data:', error));
   };
 
   useEffect(() => {
@@ -40,9 +58,9 @@ const PressureGraph = () => {
           labels: ['-25', '-20', '-15', '-10', '-5', '0', '+5', '+10', '+15', '+20', '+25'], // Months
           datasets: [
             {
-              data: data.systolic,
+              data: data.systolic.concat([64,64,64,64,64]),
               color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // Red color for systolic pressure
-              strokeWidth: 2, // optional
+              strokeWidth: 4, // optional
             }
           ],
         }}
@@ -64,7 +82,6 @@ const PressureGraph = () => {
           propsForDots: {
             r: '5',
             strokeWidth: '5',
-            stroke: '#00008F', // Add stroke color
           },
           propsForLabels: {
             fontSize: 14, // Adjust font size for x-axis labels
