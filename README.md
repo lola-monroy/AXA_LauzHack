@@ -1,5 +1,5 @@
 # APPILL
-# Medication Reminder and Tension Monitoring App
+# Medication and Tension Monitoring App
 This project is designed to assist elderly users in managing their medication and monitoring health data through a cross-platform mobile app. It integrates pill shape detection, hypertension prediction, and smartwatch data simulation.
 ## Key Features
 - **Add Medication Information**: Users can add new medications by taking a picture of the pill and entering basic information like name, dosage, and schedule.
