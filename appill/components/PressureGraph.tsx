@@ -28,13 +28,13 @@ const PressureGraph = () => {
             setRisk((prevRisk) => {
                 const newProb = [...prevRisk.prob];
                 // Ensure the array has at least 5 elements
-                while (newProb.length < 5) {
+                while (newProb.length < 100) {
                     newProb.push(0);
                 }
                 console.log(json.probability);
                 // Assign the blood_pressure value to the 5th position
                 newProb.push(json.probability);
-                if (newProb.length > 5) {
+                if (newProb.length > 100) {
                     // Remove the first element if the array has more than 5 elements
                     newProb.shift();
                 }
@@ -53,12 +53,12 @@ const PressureGraph = () => {
         setData((prevData) => {
             const newBpm = [...prevData.bpm];
             // Ensure the array has at least 5 elements
-            while (newBpm.length < 5) {
+            while (newBpm.length < 100) {
               newBpm.push(0);
             }
             // Assign the blood_pressure value to the 5th position
             newBpm.push(json.heart_rate);
-            if (newBpm.length > 5) {
+            if (newBpm.length > 100) {
               // Remove the first element if the array has more than 5 elements
               newBpm.shift();
             }
@@ -97,7 +97,7 @@ const PressureGraph = () => {
           labels: ['-25s', '-20s', '-15s', '-10s', '-5s', 'now', '+5s', '+10s', '+15s', '+20s', '+25s'], // Months
           datasets: [
             {
-              data: risk.prob.concat([0,0,0,0,0]).map((x) => x * 100),
+              data: risk.prob.slice(-6).concat([0,0,0,0,0]).map((x) => x * 100),
               color: (opacity = 1) => `#00008F`, // Red color for systolic pressure
               strokeWidth: 4, // optional
             }
@@ -107,10 +107,9 @@ const PressureGraph = () => {
         height={chartHeight} // Set height as a percentage of window height
         yAxisLabel=""
         yAxisSuffix="%"
-        // fix y axis to 0,1
         yLabelsOffset={0}
-        fromZero={true} 
-        yAxisInterval={0.2} // optional, defaults to 1
+        fromZero={true}
+        yAxisInterval={1} 
         chartConfig={{
           backgroundColor: '#ffffff',
           backgroundGradientFrom: '#ffffff',
@@ -150,7 +149,7 @@ const PressureGraph = () => {
           labels:['-25s', '-20s', '-15s', '-10s', '-5s', 'now', '+5s', '+10s', '+15s', '+20s', '+25s'], // Months
           datasets: [
             {
-              data: data.bpm.concat([64,64,64,64,64]),
+              data: data.bpm.slice(-6).concat([64,64,64,64,64]),
               color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // Red color for systolic pressure
               strokeWidth: 4, // optional
             }
