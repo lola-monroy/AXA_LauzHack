@@ -53,6 +53,7 @@ def forecast():
         print(data_json)
 
         prediction = arima.apply(data_json['bpm']).forecast(steps=5)
+        print(prediction)
         return jsonify({'forecast': prediction.tolist()})
 
     except Exception as e:
