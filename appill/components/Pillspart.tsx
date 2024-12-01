@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
-import * as Animatable from 'react-native-animatable'; // Import Animatable
+import Icon from 'react-native-vector-icons/Ionicons'; 
+import * as Animatable from 'react-native-animatable'; 
 import * as ImagePicker from 'expo-image-picker';
-import styles from '../assets/styles'; // Import the styles
+import styles from '../assets/styles';
 
 const PillsPart = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
