@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import random
 import argparse
 
 app = Flask(__name__)
+CORS(app)
+
 normal_means = {
     'blood_pressure': 120,
     'heart_rate': 70,
