@@ -1,50 +1,72 @@
-function startMATLABServer()
-    import matlab.net.http.*
-    server = matlab.net.http.server.HTTPServer('http://localhost:8000/');
-    disp('MATLAB HTTP Server running on http://localhost:8000/');
-    server.registerHandler('/', @processRequest);
-end
+function startMATLABSocketServer()
+    % Crear un servidor de socket en el puerto 8000 utilizando Java
+    serverSocket = java.net.ServerSocket(8000);
+    disp('Servidor de socket MATLAB escuchando en el puerto 8000...');
 
-function response = processRequest(request, ~)
-    % Leer y decodificar el input JSON
-    inputData = jsondecode(request.Body.Data);
-    disp('Received input from frontend:');
-    disp(inputData);
+    while true
+        % Esperar una conexión del cliente
+        clientSocket = serverSocket.accept();
+        disp('Cliente conectado. Esperando datos...');
 
-    % Decodificar la imagen base64
-    imageData = matlab.net.base64decode(inputData.pills);
-    imageMatrix = imdecode(imageData, 'jpg'); % Cambiar 'jpg' según el formato de la imagen
+        % Crear un flujo de entrada para leer datos del cliente
+        inputStream = clientSocket.getInputStream();
+        dataInputStream = java.io.DataInputStream(inputStream);
 
-    % Leer los parámetros enviados desde el frontend
-    point_long = inputData.num_long; % Número de pastillas alargadas a destacar
-    point_round = inputData.num_round; % Número de pastillas redondas a destacar
+        % Leer datos del cliente
+        dataBuffer = []; % Inicializar el buffer de datos
+        while dataInputStream.available() > 0
+            dataBuffer = [dataBuffer; dataInputStream.readByte()]; %#ok<AGROW>
+        end
+        dataStr = char(typecast(dataBuffer, 'uint8')');
+        inputData = jsondecode(dataStr);
+        disp('Received input from frontend:');
+        disp(inputData);
 
-    % Procesar la imagen para contar y clasificar las pastillas
-    [numLong, numRound, indicesLong, indicesRound, stats] = processPills(imageMatrix);
+        % Decodificar la imagen base64
+        imageData = matlab.net.base64decode(inputData.pills);
+        imageMatrix = imdecode(imageData, 'jpg'); % Cambiar 'jpg' según el formato de la imagen
 
-    % Generar la respuesta de validación y destacar pastillas específicas
-    highlightedImage = highlightPills(imageMatrix, point_round, point_long, indicesRound, indicesLong, stats);
+        % Leer los parámetros enviados desde el frontend
+        point_long = inputData.num_long; % Número de pastillas alargadas a destacar
+        point_round = inputData.num_round; % Número de pastillas redondas a destacar
 
-    % Crear la respuesta en JSON
-    outputData = struct();
-    outputData.num_long_detected = numLong;
-    outputData.num_round_detected = numRound;
+        % Procesar la imagen para contar y clasificar las pastillas
+        [numLong, numRound, indicesLong, indicesRound, stats] = processPills(imageMatrix);
 
-    % Validación
-    outputData.message = sprintf('Detected %d round pills and %d long pills.', numRound, numLong);
-    disp(outputData.message);
+        % Generar la respuesta de validación y destacar pastillas específicas
+        highlightedImage = highlightPills(imageMatrix, point_round, point_long, indicesRound, indicesLong, stats);
 
-    % Guardar imagen destacada como archivo temporal para devolver
-    outputImagePath = 'highlighted_pills.jpg';
-    imwrite(highlightedImage, outputImagePath);
+        % Crear la respuesta en JSON
+        outputData = struct();
+        outputData.num_long_detected = numLong;
+        outputData.num_round_detected = numRound;
 
-    % Adjuntar imagen procesada en la respuesta
-    responseData = matlab.net.base64encode(fileread(outputImagePath));
-    outputData.highlighted_image_base64 = responseData;
+        % Validación
+        outputData.message = sprintf('Detected %d round pills and %d long pills.', numRound, numLong);
+        disp(outputData.message);
 
-    % Devolver respuesta
-    response = matlab.net.http.ResponseMessage(jsonencode(outputData));
-    response.ContentType = matlab.net.http.MediaType('application/json');
+        % Guardar imagen destacada como archivo temporal para devolver
+        outputImagePath = 'highlighted_pills.jpg';
+        imwrite(highlightedImage, outputImagePath);
+
+        % Adjuntar imagen procesada en la respuesta
+        responseData = matlab.net.base64encode(fileread(outputImagePath));
+        outputData.highlighted_image_base64 = responseData;
+
+        % Enviar respuesta al cliente
+        outputStr = jsonencode(outputData);
+        outputBytes = int8(outputStr);
+
+        % Crear un flujo de salida para enviar los datos al cliente
+        outputStream = clientSocket.getOutputStream();
+        dataOutputStream = java.io.DataOutputStream(outputStream);
+        dataOutputStream.write(outputBytes, 0, length(outputBytes));
+        dataOutputStream.flush();
+
+        % Cerrar la conexión con el cliente
+        clientSocket.close();
+        disp('Cliente desconectado.');
+    end
 end
 
 function [numLong, numRound, indicesLong, indicesRound, stats] = processPills(pills)
@@ -99,7 +121,7 @@ function highlightedImage = highlightPills(image, point_round, point_long, indic
 
     % Destacar pastillas alargadas
     if numel(indicesLong) < point_long
-        disp(['Error: ', num2str(point_long), ' long pill is required, but only ', num2str(numel(indicesLong)), ' were found.']);
+        disp(['Error: ', num2str(point_long), ' long pills are required, but only ', num2str(numel(indicesLong)), ' were found.']);
     else
         for i = 1:point_long
             rectangle('Position', stats(indicesLong(i)).BoundingBox, 'EdgeColor', 'red', 'LineWidth', 2);
@@ -113,4 +135,4 @@ function highlightedImage = highlightPills(image, point_round, point_long, indic
 end
 
 % Iniciar el servidor
-startMATLABServer();
+startMATLABSocketServer();
