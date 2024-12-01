@@ -10,12 +10,13 @@ This application is designed to help elderly users who suffer or are vulnerable 
 - **Secure Data Storage**: We store user data in a secure way, localy, to ensure privacy.
 
 ## Technologies Used
-- **React Native**: For creating a cross-platform mobile app.
-- **MATLAB** (for image processing): Scripts used for recognizing the shape of pills using basic image processing techniques like erosions and other morphological operations. Later on transformed to a python script to ease the transition from frontend to backend.
-- **Python**
+- **React Native:** For building a cross-platform mobile app with a simple and intuitive interface, designed for elderly users.
+- **MATLAB (Image Processing):** Used to prototype pill recognition algorithms based on basic morphological operations like erosions and contour detection. Later converted to a python script for better manipulation. 
+- **Python:** Backend implementation of image processing algorithms, transitioning from MATLAB for better integration with the app and scalability.
 
 ## Future Improvements
 - **Accessibility Features**: Provide audio instructions for better accessibility.
+- **Take the photo on the spot**: Instead of having to upload it from computer
 
 
 ## Contributing
