@@ -1,26 +1,36 @@
 import React, { useState } from 'react';
-import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
+import * as Animatable from 'react-native-animatable'; // Import Animatable
 import * as ImagePicker from 'expo-image-picker';
+import styles from '../assets/styles'; // Import the styles
 
-export default function PillsPart() {
+const PillsPart = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const navigation = useNavigation();
 
   const handlePickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (!permissionResult.granted) {
-      alert('Permissions are required to access the camera roll!');
-      return;
-    }
+      if (!permissionResult.granted) {
+        Alert.alert('Permission Required', 'Permissions are required to access the camera roll!');
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      if (!result.canceled) {
+        setSelectedImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'An error occurred while picking the image. Please try again.');
     }
   };
 
@@ -30,78 +40,32 @@ export default function PillsPart() {
 
   return (
     <View style={styles.container}>
-      {!selectedImage && (
-        <>
-          <TouchableOpacity style={styles.button} onPress={handlePickImage}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-back" size={24} color="#00008F" />
+      </TouchableOpacity>
+      <Text style={styles.title}>Pill controller</Text>
+      <Text style={styles.subtitle}>Are you taking the right pills? Check it!</Text>
+      <Animatable.View animation="fadeInUp" duration={1000} style={styles.backgroundSurface} />
+      {selectedImage ? (
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: selectedImage }} style={styles.image} />
+          <TouchableOpacity style={styles.buttonPrimary} onPress={handleGoBack}>
+            <Text style={styles.buttonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.uploadContainer}>
+          <TouchableOpacity style={styles.buttonPrimary} onPress={handlePickImage}>
+            <Icon name="cloud-upload-outline" size={24} color="#FFFFFF" style={styles.uploadIcon} />
             <Text style={styles.buttonText}>Upload Image</Text>
           </TouchableOpacity>
-          <Image source={require('../assets/images/pillsvector.png')} style={[styles.pillsVector, { width: 350, height: 350 }]} />
-        </>
-      )}
-      {selectedImage && (
-        <>
-          <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
-          <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
-            <Text style={styles.goBackButtonText}>Go Back</Text>
-          </TouchableOpacity>
-        </>
+          <Animatable.View animation="fadeIn" delay={500}>
+          <Image source={require('../assets/images/pillsvector.png') } style={styles.pillsVector} />
+          </Animatable.View>
+        </View>
       )}
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: '#00008f', 
-    paddingVertical: 19, 
-    paddingHorizontal: 35, 
-    borderRadius: 10, 
-    borderColor: '#ff1721',
-    borderWidth: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5, 
-  },
-  buttonText: {
-    color: '#fff', 
-    fontSize: 25, 
-    fontWeight: 'medium',
-    fontFamily: 'sans-serif', 
-  },
-  pillsVector: {
-    marginTop: 0, 
-    width: 100,
-    height: 100,
-  },
-  imagePreview: {
-    marginTop: 20,
-    width: 300,
-    height: 300,
-    borderRadius: 10,
-  },
-  goBackButton: {
-    marginTop: 20,
-    backgroundColor: '#ff1721',
-    paddingVertical: 19, 
-    paddingHorizontal: 35, 
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  goBackButtonText: {
-    color: '#fff',
-    fontSize: 25, 
-    fontWeight: 'medium',
-    fontFamily: 'sans-serif',
-  },
-});
+export default PillsPart;
