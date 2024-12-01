@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function StartPage() {
+export default function PillsPart() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handlePickImage = async () => {
@@ -35,7 +35,7 @@ export default function StartPage() {
           <TouchableOpacity style={styles.button} onPress={handlePickImage}>
             <Text style={styles.buttonText}>Upload Image</Text>
           </TouchableOpacity>
-          <Image source={require('./pillsvector.png')} style={[styles.pillsVector, { width: 350, height: 350 }]} />
+          <Image source={require('../assets/images/pillsvector.png')} style={[styles.pillsVector, { width: 350, height: 350 }]} />
         </>
       )}
       {selectedImage && (

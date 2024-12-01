@@ -8,6 +8,7 @@ import styles from '../assets/styles'; // Import the styles
 
 type RootStackParamList = {
   PressurePage: undefined;
+  PillsPage: undefined;
   // Add other routes here if needed
 };
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -57,6 +58,7 @@ const StartPage = () => {
             ]}
             onPressIn={() => setIsPressed({ ...isPressed, pill: true })}
             onPressOut={() => setIsPressed({ ...isPressed, pill: false })}
+            onPress={() => navigate('PillsPage')}
           >
             <Icon1
               name="pills"
