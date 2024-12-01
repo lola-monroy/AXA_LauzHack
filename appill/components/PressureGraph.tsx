@@ -27,15 +27,14 @@ const PressureGraph = () => {
         .then((json) => {
             setRisk((prevRisk) => {
                 const newProb = [...prevRisk.prob];
-                // Ensure the array has at least 5 elements
+                // Ensure the array has at least 100 elements
                 while (newProb.length < 100) {
                     newProb.push(0);
                 }
                 console.log(json.probability);
-                // Assign the blood_pressure value to the 5th position
                 newProb.push(json.probability);
                 if (newProb.length > 100) {
-                    // Remove the first element if the array has more than 5 elements
+                    // Remove the first element if the array has more than 100 elements
                     newProb.shift();
                 }
                 return {
@@ -52,14 +51,13 @@ const PressureGraph = () => {
       .then((json) => {
         setData((prevData) => {
             const newBpm = [...prevData.bpm];
-            // Ensure the array has at least 5 elements
+            // Ensure the array has at least 100 elements
             while (newBpm.length < 100) {
               newBpm.push(0);
             }
-            // Assign the blood_pressure value to the 5th position
             newBpm.push(json.heart_rate);
             if (newBpm.length > 100) {
-              // Remove the first element if the array has more than 5 elements
+              // Remove the first element if the array has more than 100 elements
               newBpm.shift();
             }
 
