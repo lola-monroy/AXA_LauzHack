@@ -3,10 +3,9 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
 import PressureGraph from './PressureGraph'; // Import the PressureGraph component
 import styles from '../assets/styles'; // Import the styles
-import React, { useState } from 'react';
+import React from 'react';
 
 const PressurePage = () => {
-  const [isPressed, setIsPressed] = useState({ pressure: false, pill: false });
   const navigation = useNavigation();
 
   return (
