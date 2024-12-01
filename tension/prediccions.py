@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from tensorflow.keras.models import load_model
 import numpy as np
+import requests
+from count_point_pills.count_python import count_pills
 
 app = Flask(__name__)
 CORS(app)
@@ -20,7 +22,6 @@ def predict():
         if not all(key in data_json for key in ['cp', 'thalach', 'exang']):
             return jsonify({'error': 'Faltan datos necesarios'}), 400
 
-        # Preprocesar los datos recibidos
         features = np.array([[
             data_json['cp'],
             data_json['thalach'],
@@ -29,7 +30,6 @@ def predict():
         ]])
         features_scaled = scaler.transform(features)
 
-        # Realizar la predicción
         probabilities = model.predict(features_scaled)
         result = float(probabilities[0][0])
 
@@ -53,5 +53,17 @@ def forecast():
         print(e)
         return jsonify({'error': str(e)}), 500
     
+@app.route('/countpills', methods=['POST'])
+def count_pills():
+    try:
+        image_path = request.get_json()['image']
+        result = count_pills(image_path)
+
+        return jsonify(result)
+
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)

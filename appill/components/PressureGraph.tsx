@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, useWindowDimensions, Button } from 'react-native';
+import { View, Text, useWindowDimensions, Button, Alert } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import styles from '../assets/styles'; // Import the styles
 
 const PressureGraph = () => {
   const { width, height } = useWindowDimensions();
   const chartHeight = height * 0.4; // 40% of the window height
+  const [alertBlocked, setAlertBlocked] = useState(false);
 
     const [data, setData] = useState<{ bpm: number[] }>({
         bpm: [],
@@ -37,6 +38,15 @@ const PressureGraph = () => {
                     // Remove the first element if the array has more than 100 elements
                     newProb.shift();
                 }
+                if (json.probability > 0.5 && !alertBlocked) {
+                  console.log('Showing alert');
+                  alert("You are at risk of an hypertension episode, please reach the closest medical center");
+                  setAlertBlocked(true);
+                  setTimeout(() => async () => {
+                    setAlertBlocked(false);
+                    console.log('Alert unblocked');
+                  }, 30000); // Block alerts for 30 seconds
+                } 
                 return {
                     prob: newProb,
                 };
