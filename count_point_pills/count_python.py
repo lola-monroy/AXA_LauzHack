@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from skimage.measure import label, regionprops
+from skimage.measure import label, regionprops 
 from skimage.morphology import disk, erosion
 import json
 from datetime import datetime
