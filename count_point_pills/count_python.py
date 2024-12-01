@@ -32,6 +32,8 @@ indices_round = []
 fig, ax = plt.subplots()
 ax.imshow(pills_rgb)
 
+ax.axis('off')
+
 for i, region in enumerate(regions):
     aspect_ratio = region.major_axis_length / region.minor_axis_length
     eccentricity = region.eccentricity
@@ -74,7 +76,7 @@ if len(indices_long) >= point_long:
         ax.add_patch(rect)
 
 annotated_image_path = 'annotated_pill_image.png'
-plt.savefig(annotated_image_path)
+plt.savefig(annotated_image_path, bbox_inches='tight', pad_inches=0)
 
 results = {
     'total_num_long': num_long,
