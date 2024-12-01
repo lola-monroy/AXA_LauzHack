@@ -77,8 +77,10 @@ annotated_image_path = 'annotated_pill_image.png'
 plt.savefig(annotated_image_path)
 
 results = {
-    'num_long': num_long,
-    'num_round': num_round,
+    'total_num_long': num_long,
+    'total_num_round': num_round,
+    'num_long': point_long,
+    'num_round': point_round,
     'annotated_image_path': annotated_image_path
 }
 
