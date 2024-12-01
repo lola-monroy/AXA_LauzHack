@@ -27,7 +27,7 @@ const StartPage = () => {
         <Animatable.View animation="fadeInUp" delay={500}>
           <TouchableOpacity
             style={[
-              styles.buttonPrimary,
+              styles.buttonMenu,
               isPressed.pressure && styles.buttonPressed,
             ]}
             onPressIn={() => setIsPressed({ ...isPressed, pressure: true })}
@@ -53,7 +53,7 @@ const StartPage = () => {
         <Animatable.View animation="fadeInUp" delay={1000}>
           <TouchableOpacity
             style={[
-              styles.buttonPrimary,
+              styles.buttonMenu,
               isPressed.pill && styles.buttonPressed,
             ]}
             onPressIn={() => setIsPressed({ ...isPressed, pill: true })}

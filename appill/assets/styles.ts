@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   buttonPrimary: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF', // White background color
     borderColor: '#00008F', // Blue border color
@@ -81,8 +81,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 15,
     marginVertical: 15, // Add space between buttons
-    width: 250, // Fixed width for buttons
-    height: 150, // Fixed height for buttons
     shadowColor: '#000', // Shadow color
     shadowOffset: { width: 0, height: 5 }, // Shadow offset
     shadowOpacity: 0.3, // Shadow opacity
@@ -132,7 +130,44 @@ const styles = StyleSheet.create({
     height: 10,
     marginRight: 5,
     borderRadius: 5,
-  }
+  },
+  imageContainer: {
+    alignItems: 'center',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  uploadContainer: {
+    alignItems: 'center',
+  },
+  pillsVector: {
+    width: 250,
+    height: 250,
+    marginTop: 20,
+  },
+  backgroundSurface: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: "55%",
+    backgroundColor: '#d24723',
+    padding: 10,
+    borderRadius: 0,
+    shadowColor: '#111',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    zIndex: -1,
+  },
+  uploadIcon: {
+    marginRight: 10,
+    color: '#00008f' // Add space between icon and text
+  },
 });
 
 export default styles;
