@@ -3,19 +3,25 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Icon1 from 'react-native-vector-icons/Fontisto';
 import * as Animatable from 'react-native-animatable';
+import { useNavigation } from '@react-navigation/native';
 import styles from '../assets/styles'; // Import the styles
+
+type RootStackParamList = {
+  PressurePage: undefined;
+  // Add other routes here if needed
+};
+import { StackNavigationProp } from '@react-navigation/stack';
 
 const StartPage = () => {
   const [isPressed, setIsPressed] = useState({ pressure: false, pill: false });
+  const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
         Welcome to <Text style={styles.highlight}>appill</Text> 👋
       </Text>
-      <Text style={styles.subtitle}>
-        How can we help you?
-      </Text>
+      <Text style={styles.subtitle}>How can we help you?</Text>
       <View style={styles.buttonContainer}>
         <Animatable.View animation="fadeInUp" delay={500}>
           <TouchableOpacity
@@ -25,6 +31,7 @@ const StartPage = () => {
             ]}
             onPressIn={() => setIsPressed({ ...isPressed, pressure: true })}
             onPressOut={() => setIsPressed({ ...isPressed, pressure: false })}
+            onPress={() => navigate('PressurePage')}
           >
             <Icon
               name="graph"
