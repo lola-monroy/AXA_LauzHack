@@ -7,29 +7,70 @@ const PressureGraph = () => {
   const { width, height } = useWindowDimensions();
   const chartHeight = height * 0.4; // 40% of the window height
 
-    const [data, setData] = useState<{ systolic: number[] }>({
-        systolic: [],
+    const [data, setData] = useState<{ bpm: number[] }>({
+        bpm: [],
     });
+
+    const [risk, setRisk] = useState<{ prob: number[] }>({
+        prob: [],
+    });
+
+    const fetchPrediction = (measures: any)  => {
+        fetch('http://127.0.0.1:3000/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(measures),
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            setRisk((prevRisk) => {
+                const newProb = [...prevRisk.prob];
+                // Ensure the array has at least 5 elements
+                while (newProb.length < 5) {
+                    newProb.push(0);
+                }
+                console.log(json.probability);
+                // Assign the blood_pressure value to the 5th position
+                newProb.push(json.probability);
+                if (newProb.length > 5) {
+                    // Remove the first element if the array has more than 5 elements
+                    newProb.shift();
+                }
+                return {
+                    prob: newProb,
+                };
+            });
+            console.log(risk);
+        })
+    }
 
   const fetchData = () => {
     fetch('http://127.0.0.1:5000/smartwatch')
       .then((response) => response.json())
       .then((json) => {
         setData((prevData) => {
-            const newSystolic = [...prevData.systolic];
+            const newBpm = [...prevData.bpm];
             // Ensure the array has at least 5 elements
-            while (newSystolic.length < 5) {
-              newSystolic.push(0);
+            while (newBpm.length < 5) {
+              newBpm.push(0);
             }
             // Assign the blood_pressure value to the 5th position
-            newSystolic.push(json.heart_rate);
-            if (newSystolic.length > 5) {
+            newBpm.push(json.heart_rate);
+            if (newBpm.length > 5) {
               // Remove the first element if the array has more than 5 elements
-              newSystolic.shift();
+              newBpm.shift();
             }
-  
+
+            // Get all the fields from the response in a dictionary
+            const measures = [{ thalach: json.heart_rate, cp: json.heart_rate_variability > 0.17 ? 2 : json.heart_rate_variaility > 0.13 ? 1 : 0, exang: json.steps > 30 ? 1 : 0}]
+            // send this data to the endpoint 3000
+            fetchPrediction(measures);
+            console.log(risk);
+
             return {
-              systolic: newSystolic,
+              bpm: newBpm,
             };
           });
         console.log(data);
@@ -47,16 +88,69 @@ const PressureGraph = () => {
     <View style={styles.graphContainer}>
       <View style={styles.legendContainer}>
         <View style={styles.legendItem}>
-          <View style={[styles.legendColor, { backgroundColor: 'red' }]} />
-          <Text style={styles.legendText}>Systolic Pressure</Text>
+          <View style={[styles.legendColor, { backgroundColor: 'blue' }]} />
+          <Text style={styles.legendText}>Hipertension episode risk</Text>
         </View>
       </View>
       <LineChart
         data={{
-          labels: ['-25', '-20', '-15', '-10', '-5', '0', '+5', '+10', '+15', '+20', '+25'], // Months
+          labels: ['-25s', '-20s', '-15s', '-10s', '-5s', 'now', '+5s', '+10s', '+15s', '+20s', '+25s'], // Months
           datasets: [
             {
-              data: data.systolic.concat([64,64,64,64,64]),
+              data: risk.prob.concat([0,0,0,0,0]).map((x) => x * 100),
+              color: (opacity = 1) => `#00008F`, // Red color for systolic pressure
+              strokeWidth: 4, // optional
+            }
+          ],
+        }}
+        width={width - 40} // Adjust width to be responsive
+        height={chartHeight} // Set height as a percentage of window height
+        yAxisLabel=""
+        yAxisSuffix="%"
+        // fix y axis to 0,1
+        yLabelsOffset={0}
+        fromZero={true} 
+        yAxisInterval={0.2} // optional, defaults to 1
+        chartConfig={{
+          backgroundColor: '#ffffff',
+          backgroundGradientFrom: '#ffffff',
+          backgroundGradientTo: '#ffffff',
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 16, // Replace with your custom font name
+          },
+          propsForDots: {
+            r: '5',
+            strokeWidth: '5',
+          },
+          propsForLabels: {
+            fontSize: 12, // Adjust font size for x-axis labels
+            fontWeight: 'thin', // Make x-axis labels bold
+            fill: '#00008F',
+            fontFamily: 'Montserrat', 
+          },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+          marginHorizontal: 20, // Add margin to the sides
+        }}
+      />
+      <View style={styles.legendContainer}>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendColor, { backgroundColor: 'red' }]} />
+          <Text style={styles.legendText}>Heartbeat rate</Text>
+        </View>
+      </View>
+      <LineChart
+        data={{
+          labels:['-25s', '-20s', '-15s', '-10s', '-5s', 'now', '+5s', '+10s', '+15s', '+20s', '+25s'], // Months
+          datasets: [
+            {
+              data: data.bpm.concat([64,64,64,64,64]),
               color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // Red color for systolic pressure
               strokeWidth: 4, // optional
             }
@@ -65,8 +159,9 @@ const PressureGraph = () => {
         width={width - 40} // Adjust width to be responsive
         height={chartHeight} // Set height as a percentage of window height
         yAxisLabel=""
-        yAxisSuffix="psi"
+        yAxisSuffix="bpm"
         yAxisInterval={1} // optional, defaults to 1
+        fromZero={true} 
         chartConfig={{
           backgroundColor: '#ffffff',
           backgroundGradientFrom: '#ffffff',
@@ -82,9 +177,10 @@ const PressureGraph = () => {
             strokeWidth: '5',
           },
           propsForLabels: {
-            fontSize: 14, // Adjust font size for x-axis labels
-            fontWeight: 'bold', // Make x-axis labels bold
-            fill: '#00008F', // Change color of x-axis labels
+            fontSize: 12, // Adjust font size for x-axis labels
+            fontWeight: 'thin', // Make x-axis labels bold
+            fill: '#00008F',
+            fontFamily: 'Montserrat', 
           },
         }}
         bezier

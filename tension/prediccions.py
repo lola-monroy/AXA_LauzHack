@@ -1,11 +1,13 @@
 import joblib
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from tensorflow.keras.models import load_model
 import numpy as np
 import requests
 
 # Definir la API con Flask
 app = Flask(__name__)
+CORS(app)
 
 # Cargar el modelo entrenado y el scaler
 model = load_model('tension/hypertension_model.h5')
@@ -14,7 +16,7 @@ scaler = joblib.load('tension/scaler.save')
 def predict():
     try:
         # Obtener los datos del cuerpo de la solicitud que llega del frontend
-        data = request.get_json()
+        data = request.get_json()[0]
         print(data)
 
         # Verificar si los datos contienen los campos requeridos

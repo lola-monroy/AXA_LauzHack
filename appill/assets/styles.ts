@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5', // Light background color
-    padding: 20,
+    paddingTop:10
   },
   title: {
     fontSize: 28,
@@ -109,7 +109,10 @@ const styles = StyleSheet.create({
     borderColor: '#00008F',
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
-    padding: 5,
+    paddingTop: '10%',
+    paddingBottom: '10%',
+    shadowColor: '#cccccc',
+    shadowOffset: { width: 0, height: -5 },
   },
   legendContainer: {
     flexDirection: 'row',
