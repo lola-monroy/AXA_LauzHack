@@ -45,6 +45,34 @@ const PressureGraph = () => {
         })
     }
 
+    const fetchForecast = (measures: any)  => {
+        const forecast = fetch('http://127.0.0.1:3000/forecast', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(measures.bpms),
+        }).then((response) => response.json())
+        console.log(forecast);
+
+        // for each bpm forecasted, predict its risk and assign it to risk_forecast
+        const risk_forecast = forecast.map((bpm: number) => {
+            const measures_forecast = [{ thalach: bpm, cp: measures.cp, exang: measures.exang}];
+            const risk_forecast = fetch('http://127.0.0.1:3000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(measures_forecast),
+            }).then((response) => response.json())
+            return risk_forecast.probability;
+        });
+        console.log(risk_forecast);
+
+        // return both bpm and risk_forecast
+        return {bpms: forecast, risks: risk_forecast};
+    }
+
   const fetchData = () => {
     fetch('http://127.0.0.1:5000/smartwatch')
       .then((response) => response.json())
@@ -52,11 +80,11 @@ const PressureGraph = () => {
         setData((prevData) => {
             const newBpm = [...prevData.bpm];
             // Ensure the array has at least 100 elements
-            while (newBpm.length < 100) {
+            while (newBpm.length < 5) {
               newBpm.push(0);
             }
             newBpm.push(json.heart_rate);
-            if (newBpm.length > 100) {
+            if (newBpm.length > 5) {
               // Remove the first element if the array has more than 100 elements
               newBpm.shift();
             }
