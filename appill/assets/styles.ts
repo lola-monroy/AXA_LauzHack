@@ -124,6 +124,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingRight:2,
   },
+  pillCountText: {
+    fontSize: 18,
+    color: '#333333',
+    marginBottom: 20,
+  },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
