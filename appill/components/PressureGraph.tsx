@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, useWindowDimensions, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import styles from '../assets/styles'; // Import the styles
 
 const PressureGraph = () => {
   const { width, height } = useWindowDimensions();
   const chartHeight = height * 0.4; // 40% of the window height
-  const navigation = useNavigation();
 
     const [data, setData] = useState<{ systolic: number[] }>({
         systolic: [],
@@ -24,7 +22,7 @@ const PressureGraph = () => {
               newSystolic.push(0);
             }
             // Assign the blood_pressure value to the 5th position
-            newSystolic.push(json.blood_pressure);
+            newSystolic.push(json.heart_rate);
             if (newSystolic.length > 5) {
               // Remove the first element if the array has more than 5 elements
               newSystolic.shift();
