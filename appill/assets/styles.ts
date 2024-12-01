@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   legendText: {
-    fontSize: 16,
+    fontSize: 18,
     paddingRight:2,
   },
   legendItem: {
