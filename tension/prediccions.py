@@ -4,6 +4,8 @@ from flask_cors import CORS
 from tensorflow.keras.models import load_model
 import numpy as np
 import requests
+import sys
+sys.path.append('.')
 from count_point_pills.count_python import count_pills
 
 app = Flask(__name__)
@@ -47,6 +49,7 @@ def forecast():
         print(data_json)
 
         prediction = arima.apply(data_json['bpm']).forecast(steps=5)
+        print(prediction)
         return jsonify({'forecast': prediction.tolist()})
 
     except Exception as e:

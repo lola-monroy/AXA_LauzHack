@@ -32,7 +32,6 @@ const PressureGraph = () => {
                 while (newProb.length < 100) {
                     newProb.push(0);
                 }
-                console.log(json.probability);
                 newProb.push(json.probability);
                 if (newProb.length > 100) {
                     // Remove the first element if the array has more than 100 elements
@@ -51,32 +50,32 @@ const PressureGraph = () => {
                     prob: newProb,
                 };
             });
-            console.log(risk);
         })
     }
 
-    const fetchForecast = (measures: any)  => {
-        const forecast = fetch('http://127.0.0.1:3000/forecast', {
+    const fetchForecast = async (measures: any)  => {
+        const forecast = await fetch('http://127.0.0.1:3000/forecast', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(measures.bpms),
         }).then((response) => response.json())
-        console.log(forecast);
 
         // for each bpm forecasted, predict its risk and assign it to risk_forecast
-        const risk_forecast = forecast.map((bpm: number) => {
+        const risk_forecast = await Promise.all( forecast.forecast.map(async (bpm: number) => {
             const measures_forecast = [{ thalach: bpm, cp: measures.cp, exang: measures.exang}];
-            const risk_forecast = fetch('http://127.0.0.1:3000/predict', {
+            const risk_forecast = await fetch('http://127.0.0.1:3000/predict', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(measures_forecast),
             }).then((response) => response.json())
-            return risk_forecast.probability;
-        });
+            return await risk_forecast.probability;
+        }));
+      console.log("PREDICTION");
+      console.log(forecast.forecast);
         console.log(risk_forecast);
 
         // return both bpm and risk_forecast
@@ -103,19 +102,20 @@ const PressureGraph = () => {
             const measures = [{ thalach: json.heart_rate, cp: json.heart_rate_variability > 0.17 ? 2 : json.heart_rate_variaility > 0.13 ? 1 : 0, exang: json.steps > 30 ? 1 : 0}]
             // send this data to the endpoint 3000
             fetchPrediction(measures);
-            console.log(risk);
 
             return {
               bpm: newBpm,
             };
           });
-        console.log(data);
       })
       .catch((error) => console.error('Error fetching data:', error));
   };
 
   useEffect(() => {
     fetchData();
+    //const forecast = fetchForecast({ bpms: data, cp: 0, exang: 0 });
+    //console.log("FORECAST");
+    //console.log(forecast);
     const interval = setInterval(fetchData, 5000); // Refresh every 5 seconds
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
@@ -133,7 +133,7 @@ const PressureGraph = () => {
           labels: ['-25s', '-20s', '-15s', '-10s', '-5s', 'now', '+5s', '+10s', '+15s', '+20s', '+25s'], // Months
           datasets: [
             {
-              data: risk.prob.slice(-6).concat([0,0,0,0,0]).map((x) => x * 100),
+              data: risk.prob.slice(-6).map((x) => x * 100), // .concat([0,0,0,0,0])
               color: (opacity = 1) => `#00008F`, // Red color for systolic pressure
               strokeWidth: 4, // optional
             }
@@ -185,7 +185,7 @@ const PressureGraph = () => {
           labels:['-25s', '-20s', '-15s', '-10s', '-5s', 'now', '+5s', '+10s', '+15s', '+20s', '+25s'], // Months
           datasets: [
             {
-              data: data.bpm.slice(-6).concat([64,64,64,64,64]),
+              data: data.bpm.slice(-6),//.concat([64,64,64,64,64]),
               color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // Red color for systolic pressure
               strokeWidth: 4, // optional
             }
