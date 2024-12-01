@@ -6,6 +6,8 @@ This project is designed to assist elderly users in managing their medication an
 - **Medication Reminders**: The app will notify users when it's time to take their medication.
 - **Verify Medication Taken**: By taking a picture of the pill, the app will apply computer vision operations to ensure that the correct pill has been taken.
 - **Secure Data Storage**: We store user data in a secure way, localy, to ensure privacy.
+- **Hypertension Risk Prediction**: Machine learning model predicts the likelihood of hypertension using health metrics.
+- **Smartwatch Data Simulation**: Generates simulated health data, including heart rate, variability, and steps, for health tracking and alerts.
 
 ## Technologies Used
 - **React Native:** For building a cross-platform mobile app with a simple and intuitive interface, designed for elderly users.
@@ -19,15 +21,21 @@ This project is designed to assist elderly users in managing their medication an
 - tsconfig.json: TypeScript configuration for the app.
 - README.md: Documentation for the project
 
-### count_point_pills/:
+### Counting pills
 - count_python.py: Script for detecting and counting pills using OpenCV and scikit-image​
 - pillX.jpeg: Sample pill images for testing.
 - count_matlab.m & count_matlab_note.mlx: MATLAB scripts for prototyping pill recognition algorithms.
 
 ### Hypertension prediction
-- model_training.py: Machine learning pipeline to train a model for hypertension prediction​
-- prediccions.py: Flask API for hypertension predictions using the trained model​
+- data_hypertension/hypertension_data.csv: Dataset for training the hypertension prediction model.
+tension/:
+- hypertension_model.h5: Saved trained model.
+- model_training.py: Model training script using TensorFlow/Keras​
+- prediccions.py: Flask API for making predictions​
+- scaler.save: Scaler object for data normalization.
 
+### Smartwatch simulation 
+- smartwatch.py: Simulates smartwatch data for health metrics like heart rate and steps​
 
 ## Future Improvements
 - **Accessibility Features**: Provide audio instructions for better accessibility.
