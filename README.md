@@ -2,11 +2,10 @@
 # Medication and Tension Monitoring App
 This project is designed to assist elderly users in managing their medication and monitoring health data through a cross-platform mobile app. It integrates pill shape detection, hypertension prediction, and smartwatch data simulation.
 ## Key Features
-- **Add Medication Information**: Users can add new medications by taking a picture of the pill and entering basic information like name, dosage, and schedule.
-- **Medication Reminders**: The app will notify users when it's time to take their medication.
+- **Add Medication Information**: Users can add basic information like dosage, and schedule.
 - **Verify Medication Taken**: By taking a picture of the pill, the app will apply computer vision operations to ensure that the correct pill has been taken.
 - **Secure Data Storage**: We store user data in a secure way, localy, to ensure privacy.
-- **Hypertension Risk Prediction**: Machine learning model predicts the likelihood of hypertension using health metrics.
+- **Hypertension Risk Prediction**: Machine learning model predicts the likelihood of hypertension using health metrics, keeping them simple without doing overkill.
 - **Smartwatch Data Simulation**: Generates simulated health data, including heart rate, variability, and steps, for health tracking and alerts.
 
 ## Technologies Used
@@ -35,11 +34,11 @@ tension/:
 - scaler.save: Scaler object for data normalization.
 
 ### Smartwatch simulation 
-- smartwatch.py: Simulates smartwatch data for health metrics like heart rate and steps​
+- smartwatch.py: Simulates smartwatch data for health metrics like heart rate and steps​.
 
 ## Future Improvements
 - **Accessibility Features**: Provide audio instructions for better accessibility.
-- **Take the photo on the spot**: Instead of having to upload it from computer
+- **Take the photo on the spot**: Instead of having to upload it from computer.
 
 
 ## Contributing
