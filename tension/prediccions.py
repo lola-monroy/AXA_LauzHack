@@ -3,31 +3,28 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from tensorflow.keras.models import load_model
 import numpy as np
-import requests
 
-# Definir la API con Flask
 app = Flask(__name__)
 CORS(app)
 
-# Cargar el modelo entrenado y el scaler
 model = load_model('tension/hypertension_model.h5')
 scaler = joblib.load('tension/scaler.save')
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         # Obtener los datos del cuerpo de la solicitud que llega del frontend
-        data = request.get_json()[0]
-        print(data)
+        data_json = request.get_json()[0]
+        print(data_json)
 
         # Verificar si los datos contienen los campos requeridos
-        if not all(key in data for key in ['cp', 'thalach', 'exang']):
+        if not all(key in data_json for key in ['cp', 'thalach', 'exang']):
             return jsonify({'error': 'Faltan datos necesarios'}), 400
 
         # Preprocesar los datos recibidos
         features = np.array([[
-            data['cp'],
-            data['thalach'],
-            data['exang'],
+            data_json['cp'],
+            data_json['thalach'],
+            data_json['exang'],
 
         ]])
         features_scaled = scaler.transform(features)
@@ -37,6 +34,20 @@ def predict():
         result = float(probabilities[0][0])
 
         return jsonify({'probability': result})
+
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)}), 500
+
+arima = joblib.load('tension/arima.joblib')
+@app.route('/forecast', methods=['POST'])
+def forecast():
+    try:
+        data_json = request.get_json()
+        print(data_json)
+
+        prediction = arima.apply(data_json['bpm']).forecast(steps=5)
+        return jsonify({'forecast': prediction.tolist()})
 
     except Exception as e:
         print(e)
