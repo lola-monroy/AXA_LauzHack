@@ -8,25 +8,25 @@ import requests
 app = Flask(__name__)
 
 # Cargar el modelo entrenado y el scaler
-model = load_model('hypertension_model.h5')
-scaler = joblib.load('scaler.save')
+model = load_model('tension/hypertension_model.h5')
+scaler = joblib.load('tension/scaler.save')
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         # Obtener los datos del cuerpo de la solicitud que llega del frontend
         data = request.get_json()
+        print(data)
 
         # Verificar si los datos contienen los campos requeridos
-        if not all(key in data for key in ['blood_pressure', 'heart_rate', 'ecg', 'heart_rate_variability', 'steps']):
+        if not all(key in data for key in ['cp', 'thalach', 'exang']):
             return jsonify({'error': 'Faltan datos necesarios'}), 400
 
         # Preprocesar los datos recibidos
         features = np.array([[
-            data['blood_pressure'],
-            data['heart_rate'],
-            data['ecg'],
-            data['heart_rate_variability'],
-            data['steps']
+            data['cp'],
+            data['thalach'],
+            data['exang'],
+
         ]])
         features_scaled = scaler.transform(features)
 
@@ -37,4 +37,8 @@ def predict():
         return jsonify({'probability': result})
 
     except Exception as e:
+        print(e)
         return jsonify({'error': str(e)}), 500
+    
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=3000)
