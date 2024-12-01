@@ -13,7 +13,7 @@ const PressurePage = () => {
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Icon name="arrow-back" size={24} color="#00008F" />
       </TouchableOpacity>
-      <Text style={styles.title}>Pressure Stats</Text>
+      <Text style={styles.title}>Heartbeat Stats</Text>
       <Text style={styles.subtitle}>Track your pressure over time</Text>
       <PressureGraph />
       <View style={styles.infoContainer}>
