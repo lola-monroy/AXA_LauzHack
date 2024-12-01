@@ -1,10 +1,9 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+import joblib
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
 
 # Cargar los datos
 df = pd.read_csv('data/hypertension_data.csv')
@@ -42,11 +41,11 @@ from tensorflow.keras.optimizers import Adam
 model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
 
 # Entrenar el modelo
-history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test))
+model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test))
 
-# Evaluar el modelo
-loss, accuracy = model.evaluate(X_test, y_test)
-print(f'Accuracy: {accuracy}')
+# # Evaluar el modelo
+# loss, accuracy = model.evaluate(X_test, y_test)
+# print(f'Accuracy: {accuracy}')
 
 # Predecir con el modelo
 probabilities = model.predict(X_test)
@@ -54,11 +53,7 @@ predictions = (probabilities > 0.5).astype(int)
 for i in range(10):
     print(f"Predicted: {predictions[i][0]}, Actual: {y_test[i]}")
 
-# Graficar la pérdida durante el entrenamiento y la validación
-plt.plot(history.history['loss'], label='Training Loss')
-plt.plot(history.history['val_loss'], label='Validation Loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
-plt.title('Loss over Epochs')
-plt.show()
+
+# Guardar el modelo
+model.save("hypertension_model.h5")
+joblib.dump(scaler, 'scaler.save')
