@@ -1,7 +1,7 @@
-import StartPage from '@/components/StartPage';
+import App from '@/components/App';
 
 export default function HomeScreen() {
   return (
-   <StartPage />
+   <App />
   );
 }
